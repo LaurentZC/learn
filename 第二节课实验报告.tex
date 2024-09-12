@@ -1,0 +1,155 @@
+%! Author = 32186
+%! Date = 2024/9/11
+
+% Preamble
+\documentclass[16pt]{lzc}
+
+\title{Shell 和 vim 学习实验报告}
+\author{刘志才}
+\course{系统开发工具基础}
+\date{8月30日}
+
+% Document
+\begin{document}
+
+    \maketitlepage
+    \tableofcontents
+    \newpage
+    \setcounter{page}{1}
+
+
+    \section{Shell}\label{sec:shell}
+
+        使用 cd 命令可以进入文件夹。
+        \myPicture[0.5\textwidth]{./bash/1.png}{cd 命令}
+
+        使用 ls 命令可以查看当前文件夹下的文件。
+        \myPicture[0.5\textwidth]{./bash/2.png}{ls 命令}
+
+        ls 命令后面有一些可选的参数，这里列举几个，更多的可以通过 man ls 查看。
+        \begin{itemize}
+            \item \texttt{-a} 显示所有文件，包括隐藏文件。
+            \item \texttt{-l} 显示文件详细信息
+            \item \texttt{-d} 显示目录本身，而不是内容
+            \item \texttt{-h} 显示文件大小，通常搭配 \texttt{-l}
+            \item \texttt{-F} 在末尾添加字符指示文件类型
+            \item \texttt{--color} 使用颜色突出显示文件类型
+            \item \texttt{-t} 按照时间排序
+        \end{itemize}
+
+        使用 pwd 命令可以查看当前处在那个文件夹下。
+        \myPicture[0.5\textwidth]{./bash/3.png}{pwd 命令}
+
+        使用 mkdir 可以创建一个新的文件夹。
+        \myPicture[0.5\textwidth]{./bash/4.png}{mkdir 命令}
+
+        使用 rm <NAME> 可以删除一个文件。
+        \myPicture[0.5\textwidth]{./bash/9.png}{rm 命令}
+
+        使用 rm -rf <NAME> 可以删除一个文件夹，注意文件夹不能单纯的用 rm 删除。
+        \myPicture[0.5\textwidth]{./bash/5.png}{rm rf 命令}
+
+        使用 touch 命令创建一个文件。
+        \myPicture[0.5\textwidth]{./bash/6.png}{touch 命令}
+
+        使用 echo 可以向文件后面追加内容。
+        \myPicture[0.5\textwidth]{./bash/7.png}{echo 命令}
+
+        使用 vim 去查看结果，也可以使用 cat 命令查看
+        \myPicture[0.5\textwidth]{./bash/7.1.png}{查看结果}
+
+        使用 cp 命令可以拷贝一个文件到新位置
+        \myPicture[0.5\textwidth]{./bash/8.png}{cp 命令}
+
+        使用 mv 可以移动文件位置，不指定新位置就是重命名
+        \myPicture[0.5\textwidth]{./bash/10.png}{mv 命令}
+
+        使用 head 可以查看文件前几行的内容，这里我虽然写了10行但是文件只有1行，tail 命令则是看文档最后几行
+        \myPicture[0.3\textwidth]{./bash/11.png}{head 和 tail 命令}
+
+        简单的应用一下 shell 中的 for 循环和 if命令。
+        for 之后要跟着 do，以 done 来结尾；
+        if 之后也要跟着 do，以 fi 来结尾。
+        \myPicture[0.3\textwidth]{./bash/12.png}{for 和 if 命令}
+
+
+    \section{vim}\label{sec:vim}
+
+        Vim 是一种非常强大的文本编辑器，它采用了不同于传统文本编辑器的操作模式。Vim 主要有三种模式，每种模式都有其特定的功能和用途：
+
+        \begin{enumerate}
+            \item \textbf{普通模式}：
+            \begin{itemize}
+                \item \textbf{功能}：这是 Vim 启动时的默认模式。普通模式用于执行各种编辑命令和导航操作。
+
+                \item \textbf{操作}：按 \texttt{h}、\texttt{j}、\texttt{k}、\texttt{l} 键可以移动光标，
+                按 \texttt{d} 可以删除文本，按 \texttt{y} 可以复制文本，按 \texttt{p} 可以粘贴文本。
+
+                \item \textbf{切换}：要进入普通模式，通常只需按 \texttt{Esc} 键。
+            \end{itemize}
+
+            \item \textbf{插入模式}：
+            \begin{itemize}
+                \item \textbf{功能}：插入模式用于直接输入和编辑文本。
+
+                \item \textbf{操作}：要进入插入模式，在普通模式下按 \texttt{i}（在光标前插入），\texttt{I}（在行首插入），
+                \texttt{a}（在光标后插入），\texttt{A}（在行尾插入），\texttt{o}（在光标下新建一行），或 \texttt{O}（在光标上方新建一行）。
+
+                \item \textbf{退出}:按 \texttt{Esc} 键可以退出插入模式，返回普通模式。
+            \end{itemize}
+
+            \item \textbf{可视模式}：
+            \begin{itemize}
+                \item \textbf{功能}：可视模式用于选择文本。在这个模式下可以选择一部分文本，进行复制、删除或格式化。
+
+                \item \textbf{操作}：要进入可视模式，在普通模式下按 \texttt{v} 进入字符选择模式，按 \texttt{V} 进入行选择模式，
+                按 \texttt{Ctrl+v} 进入块选择模式。选择文本后，可以执行操作，如按 \texttt{d} 删除选择的文本，
+                按 \texttt{y} 复制选择的文本，或按 \texttt{p} 粘贴文本。
+
+                \item \textbf{退出}：进入普通模式或插入模式即可。
+            \end{itemize}
+        \end{enumerate}
+
+        这三种模式让 Vim 的操作非常高效，因为每种模式都有特定的功能和用途，可以根据需要灵活切换。在 Vim 中，掌握这三种模式的使用是提高编辑效率的关键。
+
+
+        \newpage
+        Vim 常用的快捷键，可以相互搭配并结合数字使用
+        \begin{itemize}
+            \item \texttt{h}：将光标向左移动一个字符。
+            \item \texttt{j}：将光标向下移动一行。
+            \item \texttt{k}：将光标向上移动一行。
+            \item \texttt{l}：将光标向右移动一个字符。
+            \item \texttt{dd}：删除当前行。
+            \item \texttt{yy}：复制当前行。
+            \item \texttt{p}：粘贴复制或剪切的内容到光标后。
+            \item \texttt{u}：撤销上一个操作。
+            \item \texttt{Ctrl+r}：重做撤销的操作。
+            \item \texttt{i}：进入插入模式，在光标前插入文本。
+            \item \texttt{Esc}：退出插入模式，返回普通模式。
+            \item \texttt{:w}：保存文件。
+            \item \texttt{:q}：退出 Vim（如果有未保存的更改，则会提示保存）。
+            \item \texttt{:wq}：保存文件并退出 Vim。
+        \end{itemize}
+
+        更多的快捷键你可以点击进入\href{https://www.cnblogs.com/markleaf/p/7808817.html}{这篇博客}查看
+
+
+    \section{感悟体会}\label{sec:}
+        在学习了 Shell 和 Vim 之后，我逐渐认识到它们各自的优点与局限。
+        Shell 在处理简单的命令和自动化任务时表现出色，但当面临更复杂的需求时，Shell 简单的界面处理起来十分复杂；
+        在这种情况下，Python 的优势变得显而易见，Python 的可读性和灵活性使得它在处理复杂数据和算法时更为高效。
+
+        另一方面，Vim 是一款功能强大的编辑器，能够极大地提升我的文本编辑效率，但它的学习曲线确实比较陡峭。
+        刚开始使用 Vim 时，我感到非常困惑，其独特的模式和快捷键需要时间去适应，Vim 的三种模式需要灵活的切换使用，才能真正体会到 Vim 的灵魂。
+
+        尽管如此，我也想象到了在处理大型项目时，Vim 肯定有它的局限性。项目规模增大时，单靠 Vim 的功能和操作方式会显得力不从心。
+        但是好消息是我发现，现代的集成开发环境（IDE）基本都会提供 Vim 插件，使得我可以在享受 IDE 强大功能的同时，利用 Vim 高效的编辑体验。
+        这种结合对二者起到了优势互补的作用，十分好用。
+
+        综上所述，通过对 Shell 和 Vim 的学习，我认识到每种工具都有其特定的优势和适用场景。
+        Shell 脚本在系统任务自动化中表现突出，而在处理复杂问题时不如 Python 显得更为得心应手。
+        Vim 虽然强大，但在大型项目中结合 IDE 的 Vim 插件使用，可以有效弥补其不足。
+        我学会了根据实际需求选择和结合工具，以最大化提升我的工作效率和编程体验。
+
+\end{document}
