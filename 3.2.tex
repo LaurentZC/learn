@@ -1,0 +1,196 @@
+        Python 同样是一门高级语言，我们按照一般地学习顺序来学习
+
+        \subsection{基本功能}\label{subsec:}
+            首先贴出一份归并排序的代码，然后解释，首先我们要导入一个数学库
+
+            \begin{minted}{Python}
+from math import sqrt
+            \end{minted}
+
+            导入库有两种方法，一种是像上面写的一样，这个意思是从 math 库中引入 sqrt 这个函数；
+            另一种方法是 import math，这样是把 math 库里面的所有函数都引入进来，不过在调用是需要 math.sqrt() 来调用。
+
+            \begin{minted}{Python}
+def merge(lst, left, mid, right):
+    left_lst = lst[left:mid + 1]
+    right_lst = lst[mid + 1:right + 1]
+
+    left_idx = right_idx = 0
+    sorted_idx = left
+
+    while left_idx < len(left_lst) and right_idx < len(right_lst):
+        if left_lst[left_idx] <= right_lst[right_idx]:
+            lst[sorted_idx] = left_lst[left_idx]
+            left_idx += 1
+        else:
+            lst[sorted_idx] = right_lst[right_idx]
+            right_idx += 1
+        sorted_idx += 1
+
+    while left_idx < len(left_lst):
+        lst[sorted_idx] = left_lst[left_idx]
+        left_idx += 1
+        sorted_idx += 1
+
+    while right_idx < len(right_lst):
+        lst[sorted_idx] = right_lst[right_idx]
+        right_idx += 1
+        sorted_idx += 1
+            \end{minted}
+
+            我们使用了 def 来定义一个函数，这个函数接受四个参数，分别是一个数组，左索引，中间索引，右索引；
+
+            数字的这个操作：[mid + 1:right + 1]，是对数组进行切片，Python 的数组切片功能十分强大，
+            支持正着切片，反着切片，跳着切片(你只需要在用一个:指定步长即可)。
+
+            while 是 Python 的循环结构的关键词，我们也可以使用 for i in range\ldots 来使用 for 循环，
+            在 Python 中 for 循环通常比 while 更加高效，不过我们更推荐注重代码的可读性，
+            毕竟如果你注重哪一点效率为什么不去用 C++ 呢？
+
+            if 和 else 就是 Python 的分支结构关键词，通常与他们搭配的就是逻辑运算符，
+            在 Python 中，你可以使用以下三个关键字：and or not。
+            当然 Python 还提供了 elif 关键词。
+
+            \begin{minted}{Python}
+def merge_sort(array, left_index, right_index):
+    if left_index < right_index:
+        mid_index = (left_index + right_index) // 2
+        merge_sort(array, left_index, mid_index)
+        merge_sort(array, mid_index + 1, right_index)
+        merge(array, left_index, mid_index, right_index)
+            \end{minted}
+
+            这里呢我们又定义了一个函数，并递归的处理数组进行排序。
+            Python 用 // 来表示整除运算符，它返回两个数相除后的整数部分，类似的还有 ** 代表乘方。
+
+            \begin{minted}{Python}
+if __name__ == "__main__":
+    sample_array = [64, 34, 25, 12, 22, 11, 90]
+    print("Original array:", sample_array)
+    merge_sort(sample_array, 0, len(sample_array) - 1)
+    print("Sorted array:", sample_array)
+            \end{minted}
+
+            这里是 Python 的主函数了。
+            if \_\_name\_\_ == ``\_\_main\_\_'':
+            是 Python 中用来检查一个模块是否作为主程序运行的条件。
+            其作用是确保代码块仅在脚本被直接执行时运行，而在脚本作为模块导入时不执行。
+            你可以不使用他，但是使用它是一种良好的编程喜欢，推荐。
+
+            你可以使用一个简单的[]来定义一个数组，用 len 求出长度，十分地方便。
+
+            print 是 Python 的打印函数，比 C++ 提供了更强大地格式化输出功能，等会我们就可以看到他。
+
+            \begin{minted}{Python}
+    sample_array.append(70)
+    sample_array.insert(1, 80)
+
+    print("Array after insert:", sample_array)
+    merge_sort(sample_array, 0, len(sample_array) - 1)
+    print("Sorted array:", sample_array)
+            \end{minted}
+
+            这里呢，我们使用了 append 和 insert 两种方法往数组里面插入元素。
+            append 是在数组末尾追加，而 insert 可以让你选择插入位置。
+
+            \begin{minted}{Python}
+    sqrt_array = [sqrt(x) for x in sample_array[1:4]]
+    print(f"Array after sqrt: {[f'{x:.3f}' for x in sqrt_array]}")
+            \end{minted}
+
+            这里我们对数组进行了一个切片，并且对切片的数组进行了开方操作，然后保留小数点后三位打印出来。
+
+            \newpage
+            我们在举几个 Python 格式化输出的例子
+
+            \begin{minted}{Python}
+    name = "Alice"
+    age = 30
+    height = 5.6
+
+    # 和C语言挺像的
+    print("Name: %s, Age: %d, Height: %.1f" % (name, age, height))
+    # 用 format 可以方便的格式化一个字符串
+    print("Name: {}, Age: {}, Height: {:.2f}".format(name, age, height))
+    # 用 f-string 来格式化
+    print(f"Name: {name}, Age: {age}, Height: ${height:,.2f}")
+    # 你可以自定义分隔符和结束符
+    print("Apple", "Banana", "Cherry", sep=" | ", end=".\n")
+            \end{minted}
+
+        \subsection{字典}\label{subsec:3}
+            贴代码，解释已经写在了注释
+            \begin{minted}{Python}
+    # 创建一个字典
+my_dict = {'name': 'Charon', 'age': 20, 'city': 'Qing Dao', 'email': 'hello@gmail.com', 'null': 1}
+
+# 打印一下
+print("Original Dictionary: ", my_dict)
+
+# 删除一个键值对
+del my_dict['null']
+# 弹出
+city = my_dict.pop('city')
+print("Dictionary after delete: ", my_dict)
+print("city: ", city)
+
+# 获取一个值，使用 get 方法，如果键不存在则返回默认值
+email = my_dict.get('email', 'Not Found')
+print("email: ", email)
+
+# 添加一个新的键值对
+my_dict['sex'] = 'male'
+print("Dictionary after update: ", my_dict)
+
+# 获取所有键
+keys = my_dict.keys()
+print("Keys:", keys)
+
+# 获取所有值
+values = my_dict.values()
+print("Values:", values)
+
+# 获取所有键值对
+items = my_dict.items()
+print("Items:", items)
+
+# 清空字典
+my_dict.clear()
+
+# 输出结果
+print("Dictionary after clear:", my_dict)
+            \end{minted}
+
+        \subsection{元组}\label{subsec:4}
+            \begin{minted}{Python}
+    # 创建一个元组
+my_tuple = (1, 2, 2, 3, 4, 5)
+
+# 计算元组长度
+length = len(my_tuple)
+print(f"Length: {length}")
+
+# 查找元素的位置
+index = my_tuple.index(3)  # 查找元素3的位置
+print(f"Index of 3: {index}")
+
+# 计数某个元素出现的次数
+count = my_tuple.count(2)
+print(f"Count of 2: {count}")
+
+# 访问元组元素
+element = my_tuple[2]  # 访问第三个元素
+print(f"Element at index 2: {element}")
+
+# 切片操作
+slice_tuple = my_tuple[1:4]
+print(f"Slice from index 1 to 3: {slice_tuple}")
+
+# 拼接元组
+new_tuple = my_tuple + (6, 7)
+print(f"Concatenated tuple: {new_tuple}")
+
+# 复制元组
+copied_tuple = my_tuple * 2
+print(f"Copied tuple: {copied_tuple}")
+            \end{minted}

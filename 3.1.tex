@@ -1,0 +1,114 @@
+    \subsection{任务控制}\label{subsec:5}
+
+        \paragraph{暂停任务}\label{par:暂停}
+            通常情况下我们可以直接使用 <C-c>\footnote{我们使用 <C-key> 来表示按下 Ctrl + key} 就可以终止一个任务，例如
+            \myPicture[0.3\textwidth]{./Shell/1.png}{<C-c> 终止程序}
+            但是有的时候 <C-c> 不能终止程序，因为这些程序可能 可能会捕捉或忽略 SIGINT 信号，
+            或者他们在后台运行（即加上了 \& 符号），<C-c> 只会影响当前前台进程。
+
+        \paragraph{kill 命令}
+            SIGTERM 则是一个更加通用的、也更加优雅地退出信号。
+            为了发出这个信号我们需要使用 kill 命令, 它的语法是： kill -TERM <PID>。
+            通常情况下，kill 是默认发出 SIGTERM 的，因此可以省略为 kill <PID>。
+            这里的 <PID> 是进程的标识符，你可以使用
+            \begin{minted}{Shell}
+ps aux
+            \end{minted}
+            列出所有的进程，查看他们的 PID；
+            或者你只关心某一个进程，则可以使用
+            \begin{minted}{Shell}
+ps aux | grep <process_name>
+            \end{minted}
+            这样，我们就可以优雅地终止进程，并在必要时强制停止它。
+
+        \paragraph{其他信号}
+            \begin{itemize}
+                \item <C-z> 可以发出一个 SIGTSTP 信号， 会让进程暂停。
+                \myPicture[0.3\textwidth]{./ml/1.png}{<C-z> 停止进程}
+
+                \item 使用 nohup 来创建一个忽略 SIGHUP 的进程，使用 \& 让他在后台进行。
+
+                使用 jobs 命令来查看所有进程。
+                \myPicture[0.3\textwidth]{./ml/2.png}{nohup 和 jobs}
+
+                \item 使用 bg 命令来让暂停的进程重新工作
+                \myPicture[0.3\textwidth]{./ml/3.png}{bg 命令}
+
+                \item 使用 kill -STOP 来暂停进程
+                \myPicture[0.3\textwidth]{./ml/4.png}{kill -STOP}
+
+                \item 尝试使用 kill -SIGHUP 去暂停进程2
+                \myPicture[0.3\textwidth]{./ml/5.png}{kill -SIGHUP}
+                我们使用 jobs 查看后发现进程2并没有暂停，这是因为我们在\hyperref[par:暂停]{上面}提到的
+                nohup 忽略了 SIGHUP
+
+                \item 在\hyperref[fig:./ml/5.png]{kill -SIGHUP}最后两行，我们使用了 kill 来结束进程2
+                SIGKILL 是一个特殊的信号，它不能被进程捕获，并且它会马上结束该进程。
+                不过这样做会有一些副作用，例如留下孤儿进程。
+            \end{itemize}
+
+\subsection{tmux}\label{subsec:tmux}
+
+    tmux 是一个终端多路复用器，它可以允许我们基于面板和标签分割出多个终端窗口，
+    这样我们就可以同时与多个 shell 会话进行交互。
+
+    \subsubsection{会话}
+        \begin{minted}[bgcolor=lightgray, frame=single]{Shell}
+tmux                # 开启一个新的对话
+tmux new -S NAME    # 以 NAME 名称开启一个新的会话
+tmux ls             # 列出所有会话
+<C-b> + d           # 在 tmux 会话中键入，会分离当前会话
+        \end{minted}
+        \myPicture[0.5\textwidth]{./tmux/1.png}{创建会话}
+
+        \begin{minted}[bgcolor=lightgray, frame=single]{Shell}
+tmux a              # 重新连接最后一个会话
+tmux a -t NAME      # 指定链接某个会话
+        \end{minted}
+        \myPicture[0.3\textwidth]{./tmux/2.png}{重新链接会话}
+        \myPicture[0.3\textwidth]{./tmux/3.png}{指定 Hello 链接}
+
+    \subsubsection{窗口}
+        \begin{minted}[bgcolor=lightgray, frame=single]{Shell}
+<C-b> + c       # 创建一个新的窗口，<C-d> 关闭
+<C-b> + N       # 跳转到第N个窗口
+<C-b> + p       # 切换到前一个窗口
+<C-b> + n       # 切换到后一个窗口
+<C-b> + ,       # 重命名当前窗口
+<C-b> + w       # 列出当前所有窗口
+        \end{minted}
+        \myPicture[0.3\textwidth]{./tmux/4.png}{窗口}
+
+    \subsubsection{面板}
+
+        \begin{minted}[bgcolor=lightgray, frame=single]{text}
+<C-b> + "        # 水平分割
+<C-b> + %        # 垂直分割
+<C-b> + <方向>    # 切换到指定方向的面板，<方向> 指的是键盘上的方向键
+<C-b> + z        # 切换当前面板的缩放
+<C-b> + [        # 开始往回卷动屏幕。可以按下空格键来开始选择，回车键复制选中的部分
+<C-b> + <空格>    # 在不同的面板排布间切换
+        \end{minted}
+
+\subsection{SSH}\label{subsec:ssh}
+    SSH 是一种网络协议，用于在不安全的网络中安全地访问和管理远程计算机。
+    它提供了一种加密的方式来连接到远程计算机，从而确保数据的机密性和完整性。
+    SSH 广泛用于远程登录、远程命令执行和文件传输等任务。
+
+    这里我们以配置 SSH 链接 GitHub 为例，我们可以使用
+    \begin{minted}{Shell}
+ssh-keygen -t rsa -b 4096
+    \end{minted}
+    来创建一个 SSH 的密钥，其中 -t rsa 指定要生成的密钥类型为 RSA，-b 4096 指定密钥的位数（长度）。
+    \myPicture[0.3\textwidth]{./ssh/1.png}{生成密钥}
+
+    创建完成，我们去查看一下
+    \myPicture[0.3\textwidth]{./ssh/2.png}{ssh 目录}
+    我们发现，有一个 id\_rsa 和一个 id\_rsa.pub。
+
+    其中 id\_rsa 是自己的私钥，不应提供给任何人；id\_rsa.pub 是公钥。
+    我们把公钥提交到 GitHub，通过公钥和私钥的配对，就可以来链接到 GitHub
+
+    当然我们需要先做一些配置，创建一个 config 文件，然后在里面写入 GitHub 的服务器。
+    \myPicture[0.3\textwidth]{./ssh/4.png}{创建 config 文件}
+    \myPicture[0.3\textwidth]{./ssh/3.png}{写入配置}
