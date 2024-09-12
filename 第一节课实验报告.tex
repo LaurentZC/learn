@@ -1,0 +1,219 @@
+\documentclass{lzc}
+
+\title{git和\LaTeX{}学习实验报告}
+\author{刘志才}
+\course{系统开发工具基础}
+\date{8/23}
+
+\setLanguage{bash}
+
+\begin{document}
+    \maketitlepage
+    \tableofcontents
+    \newpage
+    \setcounter{page}{1}
+
+
+    \section{写在正文之前的话}\label{sec:1}
+        这是系统开发工具基础 8月23日 第一节课的实验报告，在附件中放了本文档和自制模板的源码。
+
+        其中 git 命令这地方，由于本人还不会在 \LaTeX 里面调整图片，所以放在了附件，这里只列出了自学的指令。
+
+        \LaTeX 本人学过，所以只写了一些简单的代码。
+
+        GitHub 地址：\href{https://github.com/LaurentZC/learn}{https://github.com/LaurentZC/learn}
+
+
+    \section{git 的学习}\label{sec:git}
+
+        \subsection{git 的初始化}\label{subsec:1.1}
+            使用 git 之前先来配置一下，首先是三个查看的命令
+
+            \begin{lstlisting}[label={lst:1}]
+        git --version               # 查看 git 的版本，通常用来确定是否安装了 git
+        git remote --version        # 查看远程仓库，和 GitHub 配合使用
+        git config --global -list   # 查看用户的信息
+            \end{lstlisting}
+
+            接下来设置 git 的用户信息
+            \begin{lstlisting}[label={lst:2}]
+        git config --global user.name <name>            # 设置用户名
+        git config --global user.email <email>          # 设置用户邮箱
+        git config --global credential.helper store     # 将用户信息存起来，以免需要重复输入
+            \end{lstlisting}
+
+        \subsection{git 仓库的创立和删除}\label{subsec:1.2}
+            \begin{lstlisting}[label={lst:3}]
+        git init <name>         # 初始化一个本地仓库
+        git clone <address>     # 克隆一个远程仓库
+        git status              # 查看仓库状态：工作区，暂存区
+        \rm -rf .git            # 只要把 .git 这个文件删除即可，注意是隐藏文件
+            \end{lstlisting}
+
+        \subsection{使用 git 管理文件}\label{subsec:1.3}
+            git 分成三部分组成：工作区，暂存区， 版本库。
+            \begin{itemize}
+                \item 工作区：电脑文件系统中能看到的项目目录
+                \item 暂存区：是用于暂存工作区中的改动，但这些改动还没有提交到本地仓库。
+                \item 版本库：包含项目的所有版本历史记录，分为本地仓和远程仓。
+            \end{itemize}
+
+            \begin{lstlisting}[label={lst:4}]
+        git remote add <name> <address>                     # 链接本地仓和远程仓
+        git add <file>                                      # 工作区 -> 暂存区，可以使用通配符
+        git rm --cached <file>                              # 暂存区 -> 工作区
+        git commit -m <message>                             # 暂存区 -> 本地仓
+        git push <remote> <local branch>:<remote branch>    # 本地仓 -> 远程仓
+        git pull <local> <remote branch>:<local branch>     # 远程仓 -> 本地仓
+            \end{lstlisting}
+
+        \subsection{git 版本控制}\label{subsec:1.4}
+            每次提交都会有一个唯一的版本号，可以通过 git log 查询
+
+            git 也提供了一个简单方法，HEAD 就表示当前版本，HEAD\textasciicircum 或 HEAD\textasciitilde 表示上一个版本，
+            在 \textasciicircum 或 \textasciitilde 后面可以加数字。
+
+            \begin{lstlisting}[label={lst:5}]
+        git log
+        # 显示提交记录，--oneline是简化版本
+
+        git diff <version> <file>
+        # 查看版本之间某个文件的差异
+        # 两个版本号对比，一个版本号默认和仓库比，无版本号对比工作区和暂存区
+        # 无文件默认比较全部
+
+        git reset <version>
+        # 回退版本，参数有 --soft（全部保留），--mixed（保留工作区，默认），--hard（不保留）
+
+        git reflog <version>
+        # 误操作可以回溯回来
+            \end{lstlisting}
+
+
+    \section{\LaTeX{}的学习使用}\label{sec:latex}
+
+        \subsection{\LaTeX{}文件必需品}\label{subsec:2.1}
+            在最开始要使用指明文档类型，[]是可选参数，\{\}是类型，主要有四大类型：article，book，report，beamer。
+            为了支持中文，可以使用：ctexart，ctexbook，ctexrep，ctexbeamer。
+            \begin{verbatim}
+        \documentclass[]{} % 指明文档类型
+        % 导言区，可以写命令
+
+        \begin{document}
+        % 正文
+        \end{document}
+            \end{verbatim}
+
+            下面均以使用较多的 article/ctexart 为例
+
+        \subsection{相关命令}\label{subsec:2.2}
+            设置\LaTeX 文章标题等
+            \begin{verbatim}
+        \title{}  % 标题
+        \author{} % 作者
+        \date{}   % 创作日期
+        \today    % 今天的日期
+
+        \maketitle          % 正文使用，打印标题，作者，创作日期
+        \tableofcontents    % 生成目录
+            \end{verbatim}
+
+
+            设置文章的各级标题，以 “sub” 分级
+            \begin{verbatim}
+        \section{}          # 一级标题
+        \subsection{}       # 二级标题
+        \subsubsection{}    # 三级标题
+            \end{verbatim}
+
+            宏包的使用：宏包是用来扩展 \LaTeX 的功能，通过安装不同的宏包可以实现一些复杂排版功能，例如插入复杂的列表表格、插入公式和特殊符号、插入代码、设置文档版式等。
+            宏包的使用很简单只需要在导言区加入
+            \begin{verbatim}
+        \usepackage[]{}
+            \end{verbatim}
+            即可使用。
+            下面列举一下常用的宏包
+
+            \begin{tabular}{|c|c|}
+                \hline
+                \text{宏包名} & \text{说明}               \\
+                \hline
+                amsmath    & AMS \text{数学公式}         \\
+                \hline
+                geometry   & \text{修改页面尺寸，页边距，页眉页脚等} \\
+                \hline
+                titlesec   & \text{修改标题格式}           \\
+                \hline
+            \end{tabular}
+
+        \subsection{列表和表格}\label{subsec:2.3}
+            \begin{verbatim}
+        \begin{itemize} % 无序列表
+            \item 第一项
+            \item 第二项
+            \item 第三项
+        \end{itemize}
+
+        \begin{enumerate} % 有序列表
+            \item 第一项
+            \item 第二项
+            \item 第三项
+        \end{enumerate}
+
+        \begin{tabular}{|c|c|c|} % 表格，l，c，r分别表示左中右对齐
+            \hline
+            列1 & 列2 & 列3 \\
+            \hline
+            数据1 & 数据2 & 数据3 \\
+            \hline
+            数据4 & 数据5 & 数据6 \\
+            \hline
+        \end{tabular}
+            \end{verbatim}
+
+        \subsection{数学公式}\label{subsec:2.4}
+            \LaTeX 在排版数学公式上有着极大的优势，\LaTeX 提供了三种方式：行内公式，行间公式，数学环境
+
+            行内公式例如 $e^{i\pi} + 1 = 0$，只需要用一对\$包裹起来
+            \begin{verbatim}
+        $e^{i\pi} + 1 = 0$
+            \end{verbatim}
+
+            行内公式例如 \[ e^{i\pi} + 1 = 0 \] 可以用一对\$\$包裹，也可以使用\textbackslash$[$ \textbackslash$]$ 包裹（推荐）
+            \begin{verbatim}
+        \[
+        e^{i\pi} + 1 = 0
+        \]
+            \end{verbatim}
+
+            \LaTeX 提供的数学环境很多，这里举一个多行公式的例子，数学环境中的公式是自动标号的(也有不标号的)，可以方便我们引用而不是重复写公式
+            \begin{align}
+                e^{i\pi} + 1 &= 0 \\
+                E &= mc^{2}
+            \end{align}
+
+            \begin{verbatim}
+        \begin{align}
+            e^{i\pi} + 1 &= 0 \\
+            E &= mc^{2}
+        \end{align}
+            \end{verbatim}
+            \newpage
+
+
+    \section{感悟体会}\label{sec:3}
+        本节课，我学习和使用了 Git 以及\LaTeX，我充分感受到了这两者在提高工作效率和文档管理方面的便利性。
+
+        Git 是一个强大的版本控制系统，它用户追踪文件的每一次更改，回溯到任何一个历史版本，尤其在开发时还支持多人协作而不会产生冲突。
+        Git 的分支管理功能也十分强大，但很可惜由于时间关系，我暂时未学习到这里，在课下我会继续学习。
+        此外，Git 的远程仓库功能（GitHub）也使得代码分享和版本控制变得非常简单，这些极大的方便了其他课程小组合作开发程序。
+        在学习 Git 的时候，我也遇到了一些困难：在本地仓库向远程仓库推送时 ssh 密钥不匹配，通过b站的相关视频，历经千辛万苦终于解决了。
+
+        \LaTeX 是一种专业的排版系统，特别适合于需要复杂布局和数学公式的文档。
+        \LaTeX 允许用户通过编写简单的标记语言来定义文档的结构和格式，而最终生成的文档则具有一致且专业的排版效果。
+        这样可以让用户专注于内容本身，而不需要分神反复调整格式和排版。
+        \LaTeX 还可以自动生成目录、参考文献和索引，这减少了重复劳动，不需要手动一个个添加或删除。
+
+        总的来说，Git和\LaTeX 这两种工具在工作中都有十分明显的优势。 熟练使用它们，不仅提升能工作效率，还可以优化项目管理和文档编排的流程。
+        本节课学习的这两种工具让我受益匪浅，在未来我会多尝试使用这两种工具，以方便管理。
+\end{document}
