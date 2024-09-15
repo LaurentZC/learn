@@ -57,10 +57,13 @@ for t in range(100):  # 训练 100 次
     if t % 5 == 0:  # 每 5 次训练迭代更新一次图
         plt.cla()  # 清除当前图形
         prediction = torch.max(out, 1)[1]  # 预测输出的类别
-        plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1], c = prediction.data.numpy(), s = 100, lw = 0, cmap = 'RdYlGn')  # 绘制散点图
+        plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1],
+                    c = prediction.data.numpy(),
+                    s = 100, lw = 0, cmap = 'RdYlGn')  # 绘制散点图
         correct = torch.sum(torch.eq(prediction.data, y.data)).item()  # 计算正确预测的数量
         accuracy = correct / y.data.size(0)  # 计算准确度
-        plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy, fontdict = {'size': 20, 'color': 'red'})  # 显示准确度
+        plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy,
+                 fontdict = {'size': 20, 'color': 'red'})  # 显示准确度
         plt.pause(0.1)  # 暂停，以便动态显示图形
 
 plt.ioff()  # 关闭交互模式
