@@ -1,0 +1,353 @@
+\documentclass[16pt]{lzc}
+
+\title{学习实验报告}
+\author{刘志才}
+\course{系统开发工具基础}
+\date{9月13日}
+
+% Document
+\begin{document}
+
+    \maketitlepage
+    \tableofcontents
+    \newpage
+    \setcounter{page}{1}
+
+    这里是我的 GitHub 仓库: \href{https://github.com/LaurentZC/learn}{https://github.com/LaurentZC/learn}
+    
+    \section{调试及性能分析}\label{sec:1}
+
+        \subsection{打印调试法与日志}\label{subsec:2}
+            \begin{itemize}
+                \item 打印调试法：在发现问题的地方添加打印语句，通过不断重复此过程获取足够的信息以找到问题的根本原因。
+                \item 日志：相比于简单的打印语句，日志具有以下优势：
+                \begin{itemize}
+                    \item 可以将日志写入文件、socket或发送到远端服务器。
+                    \item 支持严重等级（如INFO, DEBUG, WARN, ERROR），便于过滤。
+                    \item 日志中可能包含足够的信息以帮助定位问题。
+                \end{itemize}
+
+            \end{itemize}
+
+        \subsection{调试器}\label{subsec:5}
+            当打印调试法无法满足需求时，使用调试器是一个有效的选择。调试器允许开发者与正在执行的程序进行交互，提供以下功能：
+
+            \begin{itemize}
+                \item 暂停程序执行。
+                \item 单步执行程序。
+                \item 查看变量的值。
+                \item 设置断点。
+            \end{itemize}
+
+            在 IDE 中在锁定的错误区间打上端点
+            \myPicture[0.5\textwidth]{./pytorch/img.png}{端点}
+            然后通过调试模式逐步调试，一般是这样的按钮
+            \myPicture[0.1\textwidth]{./pytorch/img_1.png}{调试按钮}
+            \newpage
+
+
+    \section{元编程}\label{sec:2}
+        元编程有构建系统、依赖管理和持续集成三个主要部分。
+        他们不仅是软件开发中的重要工具和流程，它们还在团队协作和项目管理中发挥着关键作用。
+        构建系统如 make，通过自动化编译和管理依赖，可以极大地提高了开发效率，现代也有更加优秀的 CMake， XMake 等。
+        依赖管理和语义版本控制则确保了项目的稳定性，减少了因版本不兼容而导致的问题。
+        持续集成的引入，使得代码变更后的测试和部署变得更加高效和可靠，在团队协作中可以快速响应变化。
+
+        如下就是一个简单 CMake 来管理一个 C++ 的项目
+        \begin{minted}{cmake}
+cmake_minimum_required(VERSION 3.20)
+
+# 要求至少 C++20 标准
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 定义项目名称变量
+set(PROJECT_NAME test)
+
+# 设置项目
+project(${PROJECT_NAME} C CXX)
+
+# 设置 Release 模式
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif ()
+
+# 查找 fmt 库
+find_package(fmt REQUIRED)
+
+# 添加 .cpp 文件
+file(GLOB SOURCES src/main.cpp)
+
+# 添加可执行文件
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# 添加头文件
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/includes)
+# 设置 ncurses 头文件和库路径
+target_include_directories(${PROJECT_NAME} PRIVATE "C:/msys64/mingw64/include")
+target_link_directories(${PROJECT_NAME} PRIVATE "C:/msys64/mingw64/lib")
+
+# 开启 O2 优化
+target_compile_options(${PROJECT_NAME} PRIVATE -O2)
+
+# 删除 Windows 定义的 min 和 max
+if (WIN32)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE NOMINMAX _USE_MATH_DEFINES)
+endif ()
+
+# 链接 fmt 和 Curses 库
+target_link_libraries(${PROJECT_NAME} PRIVATE ncursesw fmt::fmt)
+
+# 设置 ccache 加速编译
+find_program(CCACHE_PROGRAM ccache)
+if (CCACHE_PROGRAM)
+    message(STATUS "Found CCache: ${CCACHE_PROGRAM}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ${CCACHE_PROGRAM})
+endif ()
+        \end{minted}
+
+
+    \section{大杂烩}\label{sec:3}
+
+        \paragraph{修改键位映射}
+            修改键位映射是程序员提高工作效率的一种常见做法。
+            通过软件，可以将不常用的按键（如Caps Lock）重新映射为更常用的功能键（如Ctrl或Escape）。
+            这种自定义配置可以帮助用户更方便地执行常用操作，提升输入效率。
+
+            当前各种软件都提供了快捷键，按照自己的习惯修改他们可以极大地提高自己的开发效率。
+
+        \paragraph{VPN}
+            虚拟私人网络（VPN）是一种通过加密连接保护用户在线隐私的技术。
+            使用VPN后，我们的网络流量会通过VPN服务器转发，从而隐藏真实IP地址并加密数据传输。
+            VPN可以提高安全性，但仍然需谨慎选择服务提供商，以避免潜在的隐私风险。
+
+            最常见的，我们可以借助VPN去加速一些网站如 GitHub 等。
+
+        \paragraph{Markdown}
+            Markdown是一种轻量级的标记语言，旨在使文本格式化变得简单易用。
+            它广泛应用于文档编写、博客和在线论坛中。
+            通过简单的符号（如*、\#等），用户可以快速创建标题、列表、链接和代码块等格式，使得文档更加清晰易读。
+
+            Markdown 更加适合电子阅读，它页面从头到尾连续一致，没有 word 和 \LaTeX 这种带来的页面割裂感。
+            更是可以通过 mkdos 等工具把自己的 Markdown 部署到网页，通过 GitHub Pages 可以写一些简单的``书''。
+
+            Markdown 简单的格式更是适合哪里做笔记。如\href{run:./实例.md}{实例(点击打开)}中就展示了本人做过的笔记。
+
+        \paragraph{开机引导}
+            开机引导是计算机启动时加载操作系统的过程。
+            BIOS或UEFI负责初始化硬件并选择启动设备。
+            用户可以通过特定的键进入设置界面，配置启动顺序或选择从USB等外部设备启动。
+            这一过程对于安装新操作系统或进行系统修复非常重要。
+
+            GRUB 是一个开源的引导加载程序，主要用于启动 Linux 系统，但也能引导其他操作系统，如 Windows。
+            它允许用户在启动时选择要进入的操作系统，支持多系统引导。GRUB 具有灵活性，能处理各种文件系统和引导模式，包括 UEFI 和传统 BIOS 系统。
+            通过其配置文件和自动更新工具，GRUB 能够适应不同的硬件配置和操作系统需求，使得多操作系统环境的管理更加简便。
+            利用 GRUB 我们可以使用 Windows 和 Linux 的双系统，非常地舒服。
+
+        \paragraph{GitHub}
+            在第一节课已经学习了 GitHub 的一些简单应用，在本节课又学习了 GitHub 的 fork / PR 等功能。
+
+            在本节课中，我们学习了 GitHub 的两个重要功能：fork 和 pull request（PR）。
+
+            \begin{itemize}
+                \item Fork: 将某个仓库的完整副本复制到自己的账户下，从而允许在独立的环境中进行修改而不会影响原始仓库。
+                \item Pull Request(PR): 一种用于提交更改的请求，允许你将自己在 fork 中做的更改提议合并到原始仓库。
+            \end{itemize}
+
+            结合使用 fork 和 PR，可以有效地参与开源项目的开发和协作，
+            我们先 fork 一份到自己的账户下，clone 下来之后在本地进行修改，然后提交一个 PR，
+            在维护者审查无误后可以进行合并，从而完成一次对开源项目的贡献，
+            同时可以确保代码的质量和项目的进步。
+
+
+    \section{pytorch}\label{sec:pytorch}
+
+    PyTorch 是一个开源的深度学习框架，由 Facebook 的人工智能研究团队开发。
+    它提供了灵活的张量计算和自动求导功能，使得构建和训练神经网络变得简单直观。
+    PyTorch 的动态计算图特性允许用户在运行时修改模型结构，使得调试和实验变得更加方便。
+    此外，PyTorch 还支持使用 CUDA 进行 GPU 加速，从而提高计算效率。
+
+    \paragraph{生成张量数据}
+        \begin{minted}{Python}
+n_data = torch.ones(100, 2)                   # 创建一个 100 * 2 的元素全为 1 的矩阵
+class_0_data = torch.normal(2 * n_data, 1)    # 生成均值为 2 * n_data，标准差为 1 的正态分布数据
+class_0_labels = torch.zeros(100)             # 标签0，100个样本
+class_1_data = torch.normal(-2 * n_data, 1)   # 生成均值为 -2 * n_data，标准差为 1 的正态分布数据
+class_1_labels = torch.ones(100)              # 标签1，100个样本
+        \end{minted}
+
+    \paragraph{数据转换}
+        \begin{minted}{Python}
+# 合并 class_0_data 和 class_1_data，类型转换为 FloatTensor
+x = torch.cat((class_0_data, class_1_data), 0).type(torch.FloatTensor)
+# 合并 class_0_labels 和 class_1_labels，类型转换为 LongTensor
+y = torch.cat((class_0_labels, class_1_labels), 0).type(torch.LongTensor)
+# 将数据和标签包装为 Variable
+x, y = Variable(x), Variable(y)
+        \end{minted}
+        第一句代码将 class\_0\_data 和 class\_1\_data 沿第一个维度（行）拼接在一起，形成一个包含所有样本的数据张量，并将其数据类型转换为 FloatTensor。
+        第二句代码将 class\_0\_labels 和 class\_1\_labels 沿第一个维度拼接在一起，形成一个包含所有标签的张量，并将其数据类型转换为 LongTensor。
+        最后将数据张量 x 和标签张量 y 包装为 Variable 对象，以便在需要进行梯度计算时使用。
+
+    \paragraph{定义神经网络}
+        \begin{minted}{Python}
+class SimpleNN(torch.nn.Module):
+    def __init__(self, n_feature, n_hidden, n_output):
+        super(SimpleNN, self).__init__()
+        self.hidden = torch.nn.Linear(n_feature, n_hidden)  # 隐藏层，输入特征数到隐藏层神经元数
+        self.out = torch.nn.Linear(n_hidden, n_output)  # 输出层，隐藏层神经元数到输出类别数
+
+    def forward(self, x):
+        x = F.relu(self.hidden(x))  # 对隐藏层输出应用 ReLU 激活函数
+        x = self.out(x)  # 通过输出层
+        return x
+        \end{minted}
+
+        这段代码定义了一个简单的神经网络 SimpleNN：
+
+        \_\_init\_\_ 方法初始化了网络结构：一个隐藏层和一个输出层。
+        隐藏层接受 n\_feature 个输入特征，输出 n\_hidden 个神经元；
+        输出层接受 n\_hidden 个输入，输出 n\_output 个类别。
+
+        forward 方法定义了前向传播过程：首先通过隐藏层，并使用 ReLU 激活函数，然后将结果传递到输出层，得到最终地输出。
+
+    \paragraph{定义优化器和损失函数}
+        \begin{minted}{Python}
+optimizer = torch.optim.SGD(net.parameters(), lr = 0.02)  # 使用随机梯度下降优化器
+loss_func = torch.nn.CrossEntropyLoss()                   # 交叉熵损失函数，用于多分类问题
+        \end{minted}
+
+    \paragraph{模型训练和可视化输出}
+        \begin{minted}{Python}
+for t in range(100):  # 训练 100 次
+    out = net(x)  # 前向传播：通过网络计算输出
+    loss = loss_func(out, y)  # 计算损失
+
+    optimizer.zero_grad()  # 清空梯度
+    loss.backward()  # 反向传播：计算梯度
+    optimizer.step()  # 更新参数
+
+    if t % 5 == 0:  # 每 5 次训练迭代更新一次图
+        plt.cla()  # 清除当前图形
+        prediction = torch.max(out, 1)[1]  # 预测输出的类别
+        plt.scatter(x.data.numpy()[:, 0], x.data.numpy()[:, 1],
+                    c = prediction.data.numpy(),
+                    s = 100, lw = 0, cmap = 'RdYlGn')  # 绘制散点图
+        correct = torch.sum(torch.eq(prediction.data, y.data)).item()  # 计算正确预测的数量
+        accuracy = correct / y.data.size(0)  # 计算准确度
+        plt.text(1.5, -4, 'Accuracy=%.2f' % accuracy,
+                fontdict = {'size': 20, 'color': 'red'})  # 显示准确度
+        plt.pause(0.1)  # 暂停，以便动态显示图形
+
+plt.ioff()  # 关闭交互模式
+plt.show()  # 显示最终图形
+        \end{minted}
+
+        这段代码展示了训练模型的过程，同时利用上节课学习的 matplotlib 库进行可视化的输出，方便我们查看结果。
+
+    \paragraph{查看结果}
+        这里展现了结果
+        \myPicture[0.3\textwidth]{./pytorch/0.png}{初始状态}
+        \myPicture[0.3\textwidth]{./pytorch/1.png}{5次训练后}
+        \myPicture[0.3\textwidth]{./pytorch/2.png}{100次训练后}
+
+        \newpage
+        这是一段分类的神经网络，下面这段代码展示一段数据拟合的神经网络
+
+
+        \begin{minted}{Python}
+# 生成合成数据
+# 创建一个包含100个点的列向量，范围从-1到1
+inputs = torch.unsqueeze(torch.linspace(-1, 1, 100), dim = 1)
+# 使用二次关系生成目标值，并添加一些无关的噪声
+targets = inputs.pow(2) + 0.2 * torch.rand(inputs.size())
+
+# 绘制合成数据
+plt.scatter(inputs.data.numpy(), targets.data.numpy())  # 绘制inputs与targets的散点图
+plt.show()  # 显示图像
+
+
+# 定义一个简单的神经网络模型
+class SimpleNet(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(SimpleNet, self).__init__()
+        self.hidden_layer = nn.Linear(input_size, hidden_size)  # 隐藏层
+        self.output_layer = nn.Linear(hidden_size, output_size)  # 输出层
+
+    def forward(self, x):
+        x = F.relu(self.hidden_layer(x))  # 应用ReLU激活函数
+        x = self.output_layer(x)  # 通过输出层
+        return x
+
+
+# 初始化神经网络
+model = SimpleNet(1, 10, 1)  # 1个输入特征，10个隐藏单元，1个输出特征
+print(model)  # 打印网络架构
+
+plt.ion()  # 开启交互模式以便实时更新
+plt.show()  # 显示图像窗口
+
+# 设置优化器和损失函数
+optimizer = torch.optim.SGD(model.parameters(), lr = 0.5)  # 使用随机梯度下降优化器
+loss_function = nn.MSELoss()  # 使用均方误差损失函数
+
+# 训练循环
+for epoch in range(100):
+    predictions = model(inputs)  # 前向传播
+
+    loss = loss_function(predictions, targets)  # 计算损失
+
+    optimizer.zero_grad()  # 清除梯度
+    loss.backward()  # 反向传播以计算梯度
+    optimizer.step()  # 更新权重
+
+    if epoch % 5 == 0:  # 每5步，更新一次图像
+        plt.cla()  # 清除当前图像
+        plt.scatter(inputs.data.numpy(), targets.data.numpy())  # 绘制原始数据
+        plt.plot(inputs.data.numpy(), predictions.data.numpy(),
+                'r-', lw = 5)  # 绘制模型的预测结果
+        plt.text(0.5, 0, 'Loss = %.4f' % loss.item(),
+                fontdict = {'size': 20, 'color': 'red'})  # 显示当前损失
+        plt.pause(0.5)  # 暂停以更新图像
+
+plt.ioff()  # 关闭交互模式
+plt.show()  # 显示最终图像
+        \end{minted}
+
+        这里展现了结果
+        \myPicture[0.3\textwidth]{./pytorch/3.png}{初始状态}
+        \myPicture[0.3\textwidth]{./pytorch/4.png}{5次训练后}
+        \myPicture[0.3\textwidth]{./pytorch/5.png}{100次训练后}
+
+
+    \section{感悟体会}\label{sec:5}
+    本节课学习了较多的内容，包括调试与性能分析、元编程、CMake、键位映射、VPN、Markdown、开机引导，以及 PyTorch 等。
+
+    首先，调试和性能分析是任何编程和系统开发中的核心技能。
+    通过调试，我学会了如何有效地识别和解决代码中的问题，从而提高了开发效率。
+    IDE 提供的静态分析和端点调试功能也让我们的调试变得十分方便。
+
+    在元编程的学习中，我体会到了如何利用工具和技术来简化复杂的构建过程，我尤其对 CMake 感兴趣。
+    CMake 作为一个跨平台的构建系统生成工具，使得在不同平台和环境中构建项目变得更加一致和高效。
+    通过学习 CMake 的用法，我能够更好地管理项目的构建过程，并处理依赖关系。
+    我现在用它去管理了我的 C++ 项目，十分地方便，可以很容易地让我在 Windows 和 linux 之间进行移植。
+
+    修改键位映射的经历让我更加灵活地适应了不同的开发环境。
+    无论是在 Windows 还是 Linux 上，自定义键位映射可以保证键位永远是我熟悉的，避免熟悉不同的快捷键，让流程更加顺畅。
+
+    在学习 Markdown 的过程中，我发现它是编写文档和笔记的利器。
+    Markdown 简洁的语法和强大的功能让我能够快速创建格式良好的文档，提升了我的文档编写效率。
+
+    开机引导的配置让我了解了计算机系统启动的过程，这对于系统级别的调试和维护非常重要。
+    对于我这种双系统用户帮助十分巨大。
+
+    最后我用 PyTorch 实现了两个简单的神经网络。
+    我分别构建一个简单的分类网络和曲线拟合模型，让我对深度学习的原理和实践有了初步了解。
+    PyTorch 强大的库和灵活的框架使得模型的训练和调优变得更加直观，也让我体会到了从数据准备到模型训练和评估的完整流程。
+    不得不感慨现在的 AI 学习效率是真地高，但是我也认识到了只有大量的数据和不断地试错才能提高 AI 的准确度。
+
+    总体来说，本节课学习的知识不仅丰富了我的技术知识，也提升了我的解决问题能力。
+    每一项技能和每一种工具的掌握都方便了我的学习过程，也让我对未来的技术挑战充满了信心。
+    我期待将这些知识应用到更复杂的项目中，继续提升自己的技能和经验。
+\end{document}
